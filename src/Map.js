@@ -20,7 +20,9 @@ export const Map = ({ width, height, geoJSON }) => {
                             .projection(proj);
     
     const features = geoJSON.features.map((feature) => {
-      return <path key={feature.properties.GEOID} d={pathGenerator(feature)} />
+      return <path 
+                key={feature.properties.GEOID}
+                d={pathGenerator(feature)}/>
     })
   
     return(
