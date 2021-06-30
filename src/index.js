@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { json } from 'd3';
+import { json, geoAlbersUsa, geoPath } from 'd3';
 /*
 const getData = ({ url }) => {
 
@@ -16,36 +16,58 @@ const getData = ({ url }) => {
   return(data);
 }
 */
+
+const MapGenerate = ({ width, height, geoJSON }) => {
+
+  console.log('in map Generate');
+  console.log(width);
+  console.log(height);
+  console.log(geoJSON);
+
+  if (geoJSON.length === 0) {
+    return(<h1>Loading Data...</h1>)
+  }
+
+  const proj = geoAlbersUsa()
+                .fitSize([width, height], geoJSON);
+
+  const pathGenerator = geoPath()
+                          .projection(proj);
+  
+  const features = geoJSON.features.map((feature) => {
+    return <path key={feature.properties.GEOID} d={pathGenerator(feature)} />
+  })
+
+  return(
+    <svg width={width} height={height}>
+      <g>
+        {features}
+      </g>
+    </svg>
+  )
+}
+
+
 const App = () => {
 
   const [data, setData] = useState([]);
 
   const jsonURL = 'https://raw.githubusercontent.com/rahulAgrBej/d3_map_example/master/data/mi_tract.json'
 
+  const width = 960;
+  const height = 500;
+
   useEffect(() => {
     json(jsonURL).then((d) =>{
       console.log(d);
-      setData(d.features);
+      setData(d);
     })
   }, []);
 
-  if (!data) {
-    return(<h1>not loaded yet</h1>)
-  }
-
-  console.log('here bfore return')
-
-  
   return(
     <React.Fragment>
     <h1>Testing</h1>
-    <ul>
-        {
-          data.map((d) => {
-            return <li key={d.properties.GEOID}>{d.properties.NAME}</li>
-          })
-        }
-    </ul>
+    <MapGenerate width={width} height={height} geoJSON={data} />
     </React.Fragment>
     
   )
