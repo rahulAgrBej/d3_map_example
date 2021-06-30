@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { json, csv } from 'd3';
-import { Map } from './Map'
+import { CensusMap } from './CensusMap'
 
+// formats are codes appropriately, zeros infront
 const checkCodeFormat = (code, correctLen) => {
 
   if (code.length !== correctLen) {
@@ -15,6 +16,7 @@ const checkCodeFormat = (code, correctLen) => {
   return(code)
 }
 
+// formats each incoming row in CSV
 const rowFunc = (d) => {
 
   const stateCode = checkCodeFormat(d.STATE_NUM, 2);
@@ -39,6 +41,7 @@ const App = () => {
   const width = 960;
   const height = 500;
 
+  // fetches Map Data
   useEffect(() => {
     json(jsonURL).then((d) =>{
       console.log('map data')
@@ -47,12 +50,11 @@ const App = () => {
     })
   }, []);
 
+  // fetches the US Census BIPOC Renter data
   useEffect(() => {
     csv(csvURL, rowFunc).then((d) => {
       console.log('census bipoc renters data');
       console.log(d);
-
-
       setRenterData(d);
     })
   }, [])
@@ -60,7 +62,7 @@ const App = () => {
   return(
     <React.Fragment>
     <h1>Testing</h1>
-    <Map width={width} height={height} geoJSON={mapData} />
+    <CensusMap width={width} height={height} geoJSON={mapData} censusData={renterData} />
     </React.Fragment>
     
   )
