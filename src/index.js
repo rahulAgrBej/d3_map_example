@@ -1,51 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { json, geoAlbersUsa, geoPath } from 'd3';
-/*
-const getData = ({ url }) => {
-
-  const [data, setData] = useState({});
-
-  useEffect(() => {
-    json(url)
-    .then((d) => {
-      setData(d);
-    })
-  }, [])
-
-  return(data);
-}
-*/
-
-const MapGenerate = ({ width, height, geoJSON }) => {
-
-  console.log('in map Generate');
-  console.log(width);
-  console.log(height);
-  console.log(geoJSON);
-
-  if (geoJSON.length === 0) {
-    return(<h1>Loading Data...</h1>)
-  }
-
-  const proj = geoAlbersUsa()
-                .fitSize([width, height], geoJSON);
-
-  const pathGenerator = geoPath()
-                          .projection(proj);
-  
-  const features = geoJSON.features.map((feature) => {
-    return <path key={feature.properties.GEOID} d={pathGenerator(feature)} />
-  })
-
-  return(
-    <svg width={width} height={height}>
-      <g>
-        {features}
-      </g>
-    </svg>
-  )
-}
+import { json } from 'd3';
+import { Map } from './Map'
 
 
 const App = () => {
@@ -67,7 +23,7 @@ const App = () => {
   return(
     <React.Fragment>
     <h1>Testing</h1>
-    <MapGenerate width={width} height={height} geoJSON={data} />
+    <Map width={width} height={height} geoJSON={data} />
     </React.Fragment>
     
   )
